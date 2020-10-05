@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mm.dao.UserMapper">
+    <!--<resultMap id="BaseResultMap" type="xyz.redrain.test.User"/>-->
+
+    <select id="selectByUsername" resultType="cn.mm.pojo.User">
+        SELECT username ,password from springmvc01 WHERE username=#{username}
+--         通过#符注入参数
+--         $可以拼接字符串，#不能拼接字符串，所以$可能有sql注入的危险
+    </select>
+
+    <insert id="insertUser">
+        INSERT into springmvc01 VALUES(#{user.username}, #{user.password})
+    </insert>
+
+    <delete id="deleteUserByUsername">
+        DELETE FROM springmvc01 WHERE username=#{username}
+    </delete>
+
+    <update id="update">
+        UPDATE springmvc01 SET password=#{password} WHERE username=#{username}
+    </update>
+
+    <insert id="batchInsert">
+        INSERT INTO springmvc01 VALUES
+        <foreach collection="users" index="index" open=" " close=" " item="item" separator=",">
+            (#{item.username},#{item.password})
+        </foreach>
+    </insert>
+
+<!--if之间的语句有拼接的作用-->
+    <select id="select" resultType="cn.mm.pojo.User">
+        SELECT username, password FROM springmvc01
+        <where>
+            <if test="username != null">
+                username = #{username}
+            </if>
+            <if test="password != null">
+                AND password = #{password}
+            </if>
+        </where>
+    </select>
+</mapper>
